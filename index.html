@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Skill Gap Analyzer</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background: #f4f6f9;
+            padding: 30px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: auto;
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        label {
+            font-weight: bold;
+            display: block;
+            margin-top: 15px;
+            margin-bottom: 10px;
+        }
+
+        select {
+            width: 100%;
+            padding: 10px;
+            font-size: 16px;
+        }
+
+        .skills {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .skill-item {
+            background: #eef2ff;
+            padding: 10px;
+            border-radius: 5px;
+        }
+
+        button {
+            width: 100%;
+            margin-top: 20px;
+            padding: 12px;
+            background: #2563eb;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        button:hover {
+            background: #1d4ed8;
+        }
+
+        .result {
+            margin-top: 25px;
+            padding: 15px;
+            background: #f8fafc;
+            border-radius: 8px;
+        }
+
+        .success {
+            color: green;
+            margin-top: 10px;
+        }
+
+        .missing {
+            color: red;
+            margin-top: 10px;
+        }
+
+        ul {
+            margin-left: 20px;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Skill Gap Analyzer</h1>
+
+    <label>Select Target Role</label>
+    <select id="role">
+        <option value="frontend">Frontend Developer</option>
+        <option value="backend">Backend Developer</option>
+        <option value="fullstack">Full Stack Developer</option>
+        <option value="sde">Software Development Engineer</option>
+    </select>
+
+    <label>Select Your Current Skills</label>
+
+    <div class="skills">
+        <div class="skill-item"><input type="checkbox" value="HTML"> HTML</div>
+        <div class="skill-item"><input type="checkbox" value="CSS"> CSS</div>
+        <div class="skill-item"><input type="checkbox" value="JavaScript"> JavaScript</div>
+        <div class="skill-item"><input type="checkbox" value="React"> React</div>
+        <div class="skill-item"><input type="checkbox" value="Node.js"> Node.js</div>
+        <div class="skill-item"><input type="checkbox" value="Express"> Express</div>
+        <div class="skill-item"><input type="checkbox" value="SQL"> SQL</div>
+        <div class="skill-item"><input type="checkbox" value="Git"> Git</div>
+        <div class="skill-item"><input type="checkbox" value="OOP"> OOP</div>
+        <div class="skill-item"><input type="checkbox" value="DSA"> DSA</div>
+        <div class="skill-item"><input type="checkbox" value="APIs"> APIs</div>
+    </div>
+
+    <button onclick="analyzeSkills()">Analyze Skills</button>
+
+    <div class="result" id="result"></div>
+</div>
+
+<script>
+const roleSkills = {
+    frontend: ["HTML", "CSS", "JavaScript", "React", "Git"],
+    backend: ["Node.js", "Express", "SQL", "APIs", "Git"],
+    fullstack: [
+        "HTML",
+        "CSS",
+        "JavaScript",
+        "React",
+        "Node.js",
+        "Express",
+        "SQL",
+        "Git"
+    ],
+    sde: [
+        "JavaScript",
+        "OOP",
+        "DSA",
+        "SQL",
+        "Git",
+        "APIs"
+    ]
+};
+
+function analyzeSkills() {
+
+    const role = document.getElementById("role").value;
+
+    const selectedSkills = [...document.querySelectorAll(
+        'input[type="checkbox"]:checked'
+    )].map(skill => skill.value);
+
+    const requiredSkills = roleSkills[role];
+
+    const matchedSkills = requiredSkills.filter(skill =>
+        selectedSkills.includes(skill)
+    );
+
+    const missingSkills = requiredSkills.filter(skill =>
+        !selectedSkills.includes(skill)
+    );
+
+    const percentage = Math.round(
+        (matchedSkills.length / requiredSkills.length) * 100
+    );
+
+    document.getElementById("result").innerHTML = `
+        <h2>Analysis Result</h2>
+
+        <p><strong>Match Score:</strong> ${percentage}%</p>
+
+        <div class="success">
+            <strong>Skills You Have:</strong>
+            <ul>
+                ${
+                    matchedSkills.length
+                    ? matchedSkills.map(skill => `<li>${skill}</li>`).join('')
+                    : '<li>No matching skills found</li>'
+                }
+            </ul>
+        </div>
+
+        <div class="missing">
+            <strong>Skills You Need to Learn:</strong>
+            <ul>
+                ${
+                    missingSkills.length
+                    ? missingSkills.map(skill => `<li>${skill}</li>`).join('')
+                    : '<li>None 🎉</li>'
+                }
+            </ul>
+        </div>
+    `;
+}
+</script>
+
+</body>
+</html>
